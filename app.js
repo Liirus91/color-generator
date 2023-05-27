@@ -1,8 +1,20 @@
 const columns = document.querySelectorAll('.column');
 
 document.addEventListener('keydown', (e) => {
+  e.preventDefault();
   if (e.code === 'Space') {
     setRandomColors();
+  }
+});
+
+document.addEventListener('click', (e) => {
+  const type = e.target.dataset.type;
+  if (type === 'lock') {
+    const node =
+      e.target.tagName.toLowerCase() === 'i' ? e.target : e.target.children[0];
+
+    node.classList.toggle('fa-lock-open');
+    node.classList.toggle('fa-lock');
   }
 });
 
@@ -31,9 +43,14 @@ function isLight(color) {
 
 function setRandomColors() {
   columns.forEach((col) => {
+    const isLocked = col.querySelector('i').classList.contains('fa-lock');
     const color = generateRandomColor();
     const text = col.querySelector('h2');
     const button = col.querySelector('button');
+
+    if (isLocked) {
+      return;
+    }
 
     text.textContent = color;
     col.style.background = color;
