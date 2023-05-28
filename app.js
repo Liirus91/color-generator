@@ -15,11 +15,13 @@ document.addEventListener('click', (e) => {
 
     node.classList.toggle('fa-lock-open');
     node.classList.toggle('fa-lock');
+  } else if (type === 'name') {
+    copyToClickboard(e.target.textContent);
   }
 });
 
 function generateRandomColor() {
-  const values = '1234567890ABCDEF';
+  const values = '1234567890abcdef';
   let color = '#';
 
   for (let i = 0; i < 6; i++) {
@@ -39,6 +41,10 @@ function isLight(color) {
   let l = (max + min) / 2;
 
   return l >= 0.5 ? true : false;
+}
+
+function copyToClickboard(text) {
+  return navigator.clipboard.writeText(text);
 }
 
 function setRandomColors() {
