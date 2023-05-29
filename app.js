@@ -47,15 +47,24 @@ function copyToClickboard(text) {
   return navigator.clipboard.writeText(text);
 }
 
-function setRandomColors() {
-  columns.forEach((col) => {
+function setRandomColors(isInitial) {
+  const colors = isInitial ? getColorsFronHash() : [];
+
+  columns.forEach((col, i) => {
     const isLocked = col.querySelector('i').classList.contains('fa-lock');
-    const color = generateRandomColor();
     const text = col.querySelector('h2');
     const button = col.querySelector('button');
 
     if (isLocked) {
+      colors.push(text.textContent);
       return;
+    }
+
+    const color =
+      isInitial && colors.length > 0 ? colors[i] : generateRandomColor();
+
+    if (!isInitial) {
+      colors.push(color);
     }
 
     text.textContent = color;
@@ -64,6 +73,8 @@ function setRandomColors() {
     setTextColor(text, color);
     setTextColor(button, color);
   });
+
+  updateColorsHash(colors);
 }
 
 function setTextColor(text, color) {
@@ -76,4 +87,20 @@ function setTextColor(text, color) {
   text.style.color = textColor;
 }
 
-setRandomColors();
+function updateColorsHash(colors = []) {
+  document.location.hash = colors
+    .map((color) => color.toString().substring(1))
+    .join('-');
+}
+
+function getColorsFronHash() {
+  if (document.location.hash.length > 1) {
+    return document.location.hash
+      .substring(1)
+      .split('-')
+      .map((color) => '#' + color);
+  }
+  return [];
+}
+
+setRandomColors(true);
